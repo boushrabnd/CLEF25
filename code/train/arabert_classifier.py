@@ -62,6 +62,14 @@ train_loader = DataLoader(train_data, batch_size=8, shuffle=True)
 val_loader = DataLoader(val_data, batch_size=8)
 test_loader = DataLoader(test_data, batch_size=8)
 
+train_claims = set(X_train_val_ids.tolist())
+test_claims = set(X_test_ids.tolist())
+val_claims = set(X_val_ids.tolist())
+
+print(f"Overlap between train and test: {train_claims & test_claims}")
+print(f"Overlap between train and validation: {train_claims & val_claims}")
+print(f"Overlap between validation and test: {val_claims & test_claims}")
+
 # Set up device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)

@@ -19,6 +19,7 @@ def extract_ids_and_labels(input_file, output_file):
         annotations = item["annotations"]
         claim = item["data"]['claim']
         extracted_data["claim"] = claim
+        factuality_label = item["data"]['label']
         if annotations:
             labels = []
             # Retrieve up to three labels from annotations with the specified path
@@ -35,6 +36,7 @@ def extract_ids_and_labels(input_file, output_file):
                 # Append the extracted data to the results list
             print(labels)
             extracted_data["labels"] = labels
+            extracted_data["factuality_label"] = factuality_label
             results.append(extracted_data)
 
     # Write the results to the output JSON file
@@ -52,6 +54,6 @@ def extract_ids_and_labels(input_file, output_file):
 
 # Usage example
 input_fname = "/Users/bushrabendou/Desktop/IndependentStudy/export_105552_project-105552-at-2024-11-28-08-56-3aecdd3d.json"
-output_fname = "/Users/bushrabendou/Desktop/IndependentStudy/export_105552_project-105552-at-2024-11-28-08-56-3aecdd3d_labels.json"
+output_fname = "/Users/bushrabendou/Desktop/IndependentStudy/export_105552_project-105552-at-2024-11-28-08-56-3aecdd3d_labels2.json"
 
 extract_ids_and_labels(input_fname, output_fname)
