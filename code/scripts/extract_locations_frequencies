@@ -1,0 +1,41 @@
+import pandas as pd
+import re
+
+locations_file = 'CLEF25/data/all_country_and_city_names.txt'
+
+# Load the countries and cities into a single regex pattern
+def compile_locations_pattern(file_path):
+    with open(file_path, 'r', encoding='utf-8') as file:
+        locations = [re.escape(line.strip()) for line in file if line.strip()]
+    # Compile a single regex pattern that matches any location
+    pattern = re.compile(rf'\b({"|".join(locations)})\b', re.UNICODE)
+    return pattern
+
+# Compile the regex pattern for matching
+locations_pattern = compile_locations_pattern(locations_file)
+
+# Load the dataset
+file_path = 'CLEF25/data/AraFacts 2.csv'
+data = pd.read_csv(file_path)
+
+# Function to extract locations from claims using the compiled regex
+def extract_locations_from_claim(text, pattern):
+    return pattern.findall(text)
+
+# Extract locations from all claims
+data['extracted_locations'] = data['claim'].apply(lambda x: extract_locations_from_claim(str(x), locations_pattern))
+
+# Flatten the list of extracted locations and count frequencies
+location_counts = (
+    data['extracted_locations']
+    .explode()  # Flatten the lists into a single column
+    .value_counts()  # Count occurrences of each location
+)
+
+# Save the sorted locations and frequencies to a text file
+output_path = 'CLEF25/data/sorted_location_frequencies.txt'
+with open(output_path, 'w', encoding='utf-8') as file:
+    for location, count in location_counts.items():
+        file.write(f"{location}: {count}\n")
+
+print(f"Location frequencies saved to {output_path}")
